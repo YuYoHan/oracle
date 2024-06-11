@@ -163,10 +163,47 @@ join department d on d.id = w.id
 where w.job in('사원', '대리')
 order by w.salary desc, w.hiredate;
 
+drop table worker;
 
+select d.id as "부서번호" , d.name as "부서이름", w.name "사원명", w.hiredate "입사일"
+from worker w
+join department d on d.id = w.id
+where w.hiredate <= '2020/01/01' and w.job = '사원'
+order by w.hiredate, w.id;
 
+---
+// 집계함수
+select sum(price) as "모든 도서의 가격" from book;
+// null을 제외하고 계산한다.
+select count(bookId) as "모든 도서의 개수" from book;
+select avg(price) as "모든 도서의 평균" from book;
+select max(price) as "모든 도서의 최고가격" from book;
+select min(price) as "모든 도서의 최소가격" from book;
 
+select avg(price) from book where publisher = '이상미디어';
 
+select count(o.custId) "주문 건수", sum(salePrice)"총주문금액" 
+from orders o
+join customer c on c.custid = o.custId
+where c.name = '박지성';
 
+select avg(price), max(price), min(price) 
+from book 
+where bookName like '%축구%';
 
+select count(workerId) "총직원수", avg(salary) "평균급여" 
+from worker w
+join department d on d.id = w.id
+where d.name = '개발1팀';
+
+select count(custId) "주문한 건수", sum(salePrice) "총 주문금액" 
+from orders 
+where orderDate between '2024/06/01' and '2024/06/10';
+
+select sum(salary) "총급여"
+from worker w
+join department d on d.id =w.id
+where d.name like '%개발%';
+
+---
 
