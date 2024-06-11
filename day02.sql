@@ -55,7 +55,7 @@ order by orderDate desc, salePrice desc;
 
 ---
 // join
-select * from orders;
+select * from book;
 
 select name from customer c, orders o
 where c.custId = o.custId and bookId = 10;
@@ -74,3 +74,99 @@ select b.bookId, b.bookName, o.salePrice, o.orderDate, b.publisher
 from orders o
 join book b on b.bookId = o.bookId
 where custId = 1;
+
+// 서브 쿼리 사용
+select  c.custId, c.address, c.phone, b.bookId, b.bookName, o.orderDate, o.salePrice
+from orders o
+join customer c on c.custId = o.custId
+join book b on b.bookId = o.bookId
+where o.custId = (select custId from customer where name = '장미란')
+order by orderDate desc;
+// 서브 쿼리 없이 사용
+select c.custId, c.address, c.phone, b.bookId, b.bookName, o.orderDate, o.salePrice
+from orders o
+join customer c on c.custId = o.custId
+join book b on b.bookId = o.bookId
+where c.name = '장미란'
+order by orderDate desc;
+
+select o.custId, c.name, o.bookId, b.bookName, o.orderDate
+from orders o
+join book b on b.bookId = o.bookId
+join customer c on c.custId = o.custId
+where (b.price >= 10000)
+    and (b.publisher in('이상미디어','대한미디어')) 
+    and (b.bookName LIKE '%축구%' OR b.bookName LIKE '%야구%')
+order by orderDate desc, b.bookId;
+
+---
+
+create table department(
+    id number primary key,
+    name varchar2(30),
+    location varchar2(100)
+);
+create table worker(
+    workerId number primary key,
+    id number REFERENCES department(id),
+    hiredate date default sysdate,
+    salary number,
+    name varchar2(30),
+    job varchar2(30),
+    mgr number
+);
+
+insert into department values(1, '기획팀', '종각');
+insert into department values(2, '영업팀', '종각');
+insert into department values(3, '개발1팀', '판교');
+insert into department values(4, '개발2팀', '가산');
+insert into department values(5, '개발3팀', '가산');
+
+select * from department;
+
+insert into worker values(1, 1,'2010/01/03', 1000, '변시우', '사장', null);
+insert into worker values(2, 1,'2012/08/27', 600, '이동준', '과장', 1);
+insert into worker values(3, 1,'2014/07/28', 400, '박성빈', '대리', 2);
+insert into worker values(4, 1,'2023/10/10', 200, '임유나', '사원', 2);
+insert into worker values(5, 1,'2018/02/17', 600, '홍석영', '사원', 2);
+
+insert into worker values(6, 2,'2013/01/02', 500, '최모래', '과장', 1);
+insert into worker values(7, 2,'2014/01/02', 400, '유요한', '대리', 6);
+insert into worker values(8, 2,'2020/09/12', 300, '유현진', '사원', 7);
+insert into worker values(9, 2,'2020/09/12', 300, '박규희', '사원', 7);
+
+insert into worker values(10, 3,'2012/12/03', 500, '박준수', '과장', 1);
+insert into worker values(11, 3,'2020/02/12', 600, '김예은', '대리', 10);
+insert into worker values(12, 3,'2024/06/11', 100, '이재원', '사원', 11);
+insert into worker values(13, 3,'2020/03/05', 400, '조영흔', '사원', 11);
+
+insert into worker values(14, 4,'2014/10/20', 600, '강동균', '과장', 1);
+insert into worker values(15, 4,'2015/01/05', 500, '장동건', '대리', 14);
+insert into worker values(16, 4,'2024/04/14', 400, '공희상', '사원', 15);
+insert into worker values(17, 4,'2010/01/05', 700, '최가은', '사원', 15);
+
+select w.workerId, w.id, d.name, w.job, w.hiredate, w.salary
+from worker w
+join department d on d.id = w.id
+where d.location = '종각'
+order by w.hiredate, workerId;
+
+select d.id, d.name, d.location, w.workerId, w.name, w.hiredate
+from worker w
+join department d on d.id = w.id
+where d.name like '%개발%'
+order by d.id, w.workerId;
+
+select d.id, d.name, w.job,w.hiredate, w.salary
+from worker w
+join department d on d.id = w.id
+where w.job in('사원', '대리')
+order by w.salary desc, w.hiredate;
+
+
+
+
+
+
+
+
