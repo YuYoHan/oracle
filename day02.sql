@@ -18,7 +18,7 @@ insert into customer values(6, '±èµ¿±Ô', '´ëÇÑ¹Î±¹ ¼­¿ï', '010-9000-0001');
 insert into customer values(7, '±èÃ¶', '´ëÇÑ¹Î±¹ ´ëÀü', '010-9000-0002');
 insert into customer values(8, '±è¹Î', '´ëÇÑ¹Î±¹ ¼­¿ï', '010-9000-0003');
 delete from customer where custId = 8;
-
+---
 // ¼º¾¾°¡ ±è¾¾ÀÎ ¸ðµç °í°´ÀÇ Á¤º¸¸¦ Ãâ·Â
 select * from customer where name like '±è%';
 // ¼º¾¾°¡ ±è¾¾ÀÌ°í ¼ºÀ» Æ÷ÇÔÇÏ¿© ÀÌ¸§ÀÌ 2±ÛÀÚÀÎ °í°´ÀÇ Á¤º¸¸¦ Ãâ·Â
@@ -52,3 +52,25 @@ where bookName like '%¾ß±¸%' order by price desc, bookName;
 select * from orders 
 where (salePrice >= 20000) and (orderDate between '2024/06/01' and '2024/06/10')
 order by orderDate desc, salePrice desc;
+
+---
+// join
+select * from orders;
+
+select name from customer c, orders o
+where c.custId = o.custId and bookId = 10;
+
+SELECT c.name 
+FROM orders o
+JOIN customer c ON o.custId = c.custId
+WHERE o.bookid = 10;
+
+select b.bookName 
+from orders o
+join book b on o.bookId = b.bookId
+where custId =1;
+
+select b.bookId, b.bookName, o.salePrice, o.orderDate, b.publisher
+from orders o
+join book b on b.bookId = o.bookId
+where custId = 1;
