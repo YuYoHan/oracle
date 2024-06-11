@@ -206,4 +206,5 @@ join department d on d.id =w.id
 where d.name like '%개발%';
 
 ---
-
+// group by
+select publisher "출판사", avg(price) "평균금액" from book group by publisher;
