@@ -106,12 +106,25 @@ group by c.name;
 
 ---
 // Outer Join
-select c.name, count(*) 
+select c.name, count(o.custId) 
 from orders o 
 right outer join customer c on c.custid = o.custid
 group by c.name;
 
+select m.name, count(w.workerId)
+from worker w
+right outer join worker m on w.mgr = m.workerid
+group by m.name;
 
+select d.name, count(w.workerId)
+from worker w
+right outer join department d on d.id = w.id
+group by d.name;
+
+select b.publisher, sum(o.custId), sum(o.salePrice)
+from book b
+left outer join orders o on o.bookid = b.bookid
+group by b.publisher;
 
 
 
