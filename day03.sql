@@ -64,3 +64,53 @@ order by count(*) desc;
 select e.name "직원", m.name "관리자" 
 from worker e
 join worker m on e.mgr = m.workerId;
+
+select w.workerId "사원번호", w.name"사원명", m.name"관리자명", w.id"부서번호", d.name"부서명"
+from worker w
+join worker m on w.mgr = m.workerId
+join department d on d.id = w.id
+where d.name like '%개발%'
+order by d.id;
+
+select w.workerId "사원번호", w.name "사원명", m.name "관리자명", w.hireDate "입사일", m.hireDate "관리자 입사일"
+from worker w
+join worker m on w.mgr = m.workerid
+join department d on d.id = w.id
+where d.name like '%개발%' and w.hireDate < m.hireDate;
+
+select w.workerId, w.name, m.name, w.hireDate, m.hireDate, w.salary, m.salary
+from worker w
+join worker m on w.mgr = m.workerid
+join department d on w.id = d.id
+where d.location in ('판교','종각') and w.job in ('사원','대리')
+and w.hiredate < m.hiredate or w.salary > m.salary
+order by w.hireDate, w.salary desc;
+
+select w.workerId, w.name, w.hiredate, w.salary
+from worker w
+join worker m on w.mgr = m.workerid
+where m.name = '박성빈'
+order by w.hireDate;
+
+
+select * from worker where name = '박성빈';
+
+select custId, count(*) 
+from orders
+group by custId;
+
+select c.name, count(*) 
+from orders o 
+join customer c on c.custid = o.custid
+group by c.name;
+
+
+
+
+
+
+
+
+
+
+
