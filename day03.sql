@@ -19,7 +19,19 @@ order by avg(salary)desc;
 
 select b.bookname "도서명", count(custId) "판매건수"
 from orders o
-join book b on b.bookid = o.bookid
+join book b on b.bookid = o.bookid 
 where b.publisher in('이상미디어','대한미디어')
 group by b.bookname
 order by count(custId);
+
+// having 사용
+// group by 절에 나타난 결과에 대하여 조건식을 주고자 할 때 사용
+select b.bookname "도서명", count(custId) "판매건수"
+from orders o
+join book b on b.bookid = o.bookid 
+where b.publisher in('이상미디어','대한미디어')
+group by b.bookname having count(custId) >= 2
+order by count(custId);
+
+
+
