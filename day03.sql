@@ -104,7 +104,12 @@ from orders o
 join customer c on c.custid = o.custid
 group by c.name;
 
-
+---
+// Outer Join
+select c.name, count(*) 
+from orders o 
+right outer join customer c on c.custid = o.custid
+group by c.name;
 
 
 
