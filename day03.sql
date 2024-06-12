@@ -121,7 +121,10 @@ from worker w
 right outer join department d on d.id = w.id
 group by d.name;
 
-select b.publisher, sum(o.custId), sum(o.salePrice)
+// count 외에 집계함수는 없으면 null이 나오는데
+// oracle에서는 null을 0으로 주는 방법이 있다.
+// 그것이 nvl(컬럼, 값)이다.
+select b.publisher"출판사", nvl(sum(o.custId),0) cnt, nvl(sum(o.salePrice),0)sum
 from book b
 left outer join orders o on o.bookid = b.bookid
 group by b.publisher;
