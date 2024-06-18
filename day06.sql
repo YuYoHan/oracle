@@ -174,6 +174,59 @@ insert into newBook values(2, '재미있는 자바', '대한미디어', 10000);
 insert into newBook values(3, '재미있는 자바', '삼성당', 10000);
 insert into newBook values(4, '신나는 자바', '코스타미디어', 50000);
 
+create table newBook(
+    bookid number primary key,
+    bookname varchar2(20) not null,
+    publisher VARCHAR2(20) DEFAULT '삼성당' CHECK (publisher IN ('삼성당', '코스타미디어', '한빛미디어')),
+    price number not null check (price between 10000 and 50000)
+);
+
+insert into newBook values(1, '재미있는 자바', '한빛미디어', 10000);
+insert into newBook (bookid, bookname, price) values(2, '재미있는 자바', 40000);
+select * from newBook;
+
+drop table newBook;
+
+create table newBook(
+    bookId number primary key,
+    bookname varchar2(50) not null,
+    publisher VARCHAR2(50) ,
+    price number 
+);
+
+create table newcustomer(
+    custId number primary key,
+    name varchar2(40),
+    addr varchar2(40),
+    phone varchar2(40)
+);
+
+create table neworders(
+    orderId number primary key,
+    custId number references newcustomer(custId),
+    bookId number references newBook(bookId),
+    salePrice number ,
+    orderDate date default sysdate
+);
+
+desc neworders;
+drop table neworders;
+drop table newcustomer;
+drop table newBook;
+
+select bookId, bookName, publisher, price from book;
+insert into newbook select bookId, bookName, publisher, price from book;
+select * from newbook;
+
+insert into newcustomer select custId, name, address, phone from customer;
+select * from newcustomer;
+
+insert into neworders select * from orders;
+select * from neworders;
+
+insert into neworders values (13, 3, 9, 40000, sysdate);
+// ORA-02291: 무결성 제약조건(C##MADANG.SYS_C008405)이 위배되었습니다- 부모 키가 없습니다
+insert into neworders values (13, 60, 9, 40000, sysdate);
 
 
 
