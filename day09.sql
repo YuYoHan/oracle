@@ -157,3 +157,90 @@ where bookid in (
                         )
                 );
                 
+---
+select custId, sum(saleprice)
+from orders
+group by custId;
+
+// 상관서브쿼리
+select 
+    custId,
+    (select name from customer c where c.custId = o.custid) 이름,
+    sum(saleprice)
+from orders o
+group by custId;
+
+select 
+    bookId,
+    (select count(custId) from orders o where o.bookId = b.bookId) 판매건수
+from book b
+group by bookId;
+
+select 
+    (select b.bookName from book b where o.bookId = b.bookId) 도서명별,
+    count(*)
+from orders o
+group by bookId;
+
+select 
+    (select d.name from department d where d.id = w.id) 부서별,
+    count(w.workerId),
+    avg(w.salary),
+    max(w.salary)
+from worker w
+group by id;
+
+alter table orders add bookname varchar2(50);
+
+update orders o set bookname = (
+    select bookName
+    from book b
+    where b.bookId = o.bookId
+);
+
+alter table orders drop column bookname;
+
+desc orders;
+select * from orders;
+
+select avg(saleprice) from orders;
+
+// 단일행연산자
+select workerId, saleprice
+from orders
+where saleprice <= (select avg(saleprice) from orders);
+
+select custId from customer
+where address like '대한민국%';
+
+select sum(saleprice)
+from orders
+where custId in (select custId from customer where address like '대한민국%');
+
+delete orders where orderId =9;
+rollback;
+select orderId, saleprice
+from orders
+where saleprice > all (select saleprice from orders where custId = 4);
+
+select orderId, saleprice
+from orders
+where saleprice > (select max(saleprice) from orders where custId = 4);
+
+select custId, bookId from orders order by custId, bookId;
+
+// 박지성이 구매한 도서번호 출력
+select bookId from orders
+where custId = (select custId from customer where name = '박지성');
+// 고객번호별로 위의 도서를 구매한 건수를 출력
+select custid,count(custid)
+from orders
+where bookid in (select bookid from
+orders where custid = (select custid from customer
+						where name = '박지성')) 
+and custid <>
+(select custid from customer where name = '박지성')
+group by custid
+order by count(custid) desc;
+
+// 
