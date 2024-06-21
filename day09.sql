@@ -73,3 +73,87 @@ select * from book;
 select rownum, bookid, bookname, price, publisher
 from (select * from book order by price desc)
 where rownum <= 3 and price is not null;
+
+// 조회한 결과에 행본호인 rownum을 붙여서
+// 순차적으로 가져올 때는 잘되지만
+// 중간에 있는 데이터를 가져올 때는 안된다.
+select rownum, bookid, bookname, price, publisher
+from (select * from book order by price desc)
+where (rownum between 3 and 5) and (price is not null);
+
+// 가능하게 하려면 행번호 붙인 것을 다시 from 절에 서브쿼리로 하면 가능해진다.
+select bookid, bookname, price, publisher
+from (select rownum n, bookid, bookname, price, publisher
+from (select * from book where price is not null order by price desc)) 
+where n between 3 and 4;
+
+// 도서번호별로 판매량을 출력
+// ↓ A
+select bookid, count(*) cnt
+from orders
+group by bookid
+order by cnt desc;
+
+// A의 결과에 행번호를 붙여서 2번째 행의 cnt 출력
+// select cnt from (A) where rownum <= 2; 
+// <= 2는 되는데 = 2는 안된다.
+// 정렬한 것에다가 행번호를 붙여서 다시 서브쿼리로 만들어야 한다.
+select cnt
+from(
+    select rownum n, b.*
+    from (
+        select bookid, count(*) cnt
+        from orders
+        group by bookid
+        order by cnt desc
+        ) b
+    )
+where n = 2;
+
+// 도서번호별로 판매량중에서 판매량이 D보다 크거나 같은 도서번호 조회
+select bookid
+from (
+    select bookid, count(*) cnt
+    from orders
+    group by bookid
+    order by cnt desc
+    )
+where cnt >= (
+            select cnt
+            from(
+                select rownum n, b.*
+                from (
+                    select bookid, count(*) cnt
+                    from orders
+                    group by bookid
+                    order by cnt desc
+                    ) b
+                )
+            where n = 2
+            ); 
+
+// book테이블로부터 bookid가 E에 해당하는 도서정보를 조회
+select * from book
+where bookid in (
+            select bookid
+            from (
+                select bookid, count(*) cnt
+                from orders
+                group by bookid
+                order by cnt desc
+                )
+            where cnt >= (
+                    select cnt
+                    from(
+                        select rownum n, b.*
+                        from (
+                            select bookid, count(*) cnt
+                            from orders
+                            group by bookid
+                            order by cnt desc
+                            ) b
+                        )
+                    where n = 2
+                        )
+                );
+                
